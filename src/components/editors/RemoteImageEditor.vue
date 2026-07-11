@@ -53,7 +53,15 @@
     </div>
     <div class="settings-row">
       <span class="label">Dithering</span>
-      <input type="checkbox" v-model="component.dithering" />
+      <input
+        class="intensity-range"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        v-model.number="component.ditheringIntensity"
+      />
+      <span class="intensity-value">{{ component.ditheringIntensity }}%</span>
     </div>
     <div class="settings-row">
       <span class="label">Preview loading component</span>
@@ -119,5 +127,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #imageEditor {
+  .intensity-range {
+    flex: 1;
+    margin: 0 10px;
+    accent-color: $blue;
+  }
+
+  .intensity-value {
+    min-width: 40px;
+    text-align: right;
+    color: $light3;
+    font-size: 13px;
+  }
 }
 </style>

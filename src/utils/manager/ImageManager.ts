@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import { getBase64 } from "./FontManager";
 import { RemoteImage } from "../components/RemoteImage";
 import { requestRedraw } from "@/components/Canvas.vue";
+import { clearDitherCache } from "../Dithering";
 
 export interface Image {
   name: string;
@@ -48,6 +49,7 @@ export async function unregisterImage(imageName: string) {
   delete images[imageName];
   regImages.splice(regImages.indexOf(imageName), 1);
   elem.remove();
+  clearDitherCache();
 }
 
 export async function registerImageBase64(
@@ -105,8 +107,7 @@ export function placeRemoteImage(
     requestRedraw();
   };
 
-  if (resImage.src != imageUrl)
-    resImage.src = imageUrl;
+  if (resImage.src != imageUrl) resImage.src = imageUrl;
 }
 
 export function getRemoteImage(id: string): HTMLImageElement | null {

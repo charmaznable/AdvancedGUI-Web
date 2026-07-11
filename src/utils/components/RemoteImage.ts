@@ -6,6 +6,8 @@ import { GroupComponent } from "./GroupComponent";
 import { BoundingBox } from "../BoundingBox";
 import { getRemoteImage, placeRemoteImage } from "../manager/ImageManager";
 import { markRaw } from "vue";
+import { devMode } from "../manager/WorkspaceManager";
+import { getDitheredCanvas } from "../Dithering";
 
 export class RemoteImage extends GroupComponent {
   public static displayName: ComponentType = "Remote Image";
@@ -31,7 +33,7 @@ export class RemoteImage extends GroupComponent {
     public height: number,
     public imageUrl: string,
     public keepImageRatio: boolean,
-    public dithering: boolean,
+    public ditheringIntensity: number,
     public ratio: number
   ) {
     super(id, name, clickAction, components, expanded);
@@ -52,7 +54,23 @@ export class RemoteImage extends GroupComponent {
       const img = getRemoteImage(this.id);
       if (img && img.complete) {
         try {
-          context.drawImage(img, this.x, this.y, this.width, this.height);
+          const dithered =
+            this.ditheringIntensity > 0 && devMode.value
+              ? getDitheredCanvas(
+                  img,
+                  this.width,
+                  this.height,
+                  img.src,
+                  this.ditheringIntensity
+                )
+              : null;
+          context.drawImage(
+            dithered ?? img,
+            this.x,
+            this.y,
+            this.width,
+            this.height
+          );
         } catch {
           context.drawImage(
             document.getElementById("broken_TAKEN_ID") as HTMLImageElement,
@@ -119,7 +137,7 @@ export class RemoteImage extends GroupComponent {
       jsonObj.height,
       jsonObj.imageUrl,
       jsonObj.keepImageRatio,
-      jsonObj.dithering,
+      jsonObj.dithering ? jsonObj.ditheringIntensity ?? 100 : 0,
       jsonObj.ratio
     );
   }
@@ -138,7 +156,8 @@ export class RemoteImage extends GroupComponent {
       height: this.height,
       imageUrl: this.imageUrl,
       keepImageRatio: this.keepImageRatio,
-      dithering: this.dithering,
+      dithering: this.ditheringIntensity > 0,
+      ditheringIntensity: this.ditheringIntensity,
       ratio: this.ratio,
       ...super.toDataObj(forUsage)
     };
@@ -158,7 +177,7 @@ export class RemoteImage extends GroupComponent {
       50,
       "https://visage.surgeplay.com/head/%UUID_U%",
       true,
-      false,
+      0,
       1
     );
   }

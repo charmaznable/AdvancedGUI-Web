@@ -87,7 +87,7 @@ for (let i = 0; i < BASE_COLORS.length; i++) {
 
 const snapCache = new Map<number, number>();
 
-function snapRgb(r: number, g: number, b: number): number {
+export function snapRgb(r: number, g: number, b: number): number {
   const key = (r << 16) | (g << 8) | b;
   const cached = snapCache.get(key);
 

@@ -7,13 +7,14 @@ import { View } from "../components/View";
 import { CommandAction } from "../actions/CommandAction";
 import { Image } from "../components/Image";
 import { GIF } from "../components/GIF";
+import { RemoteImage } from "../components/RemoteImage";
 import { CheckComponent } from "../components/CheckComponent";
 import { ComparisonType, PlaceholderCheck } from "../checks/PlaceholderCheck";
 import { hexToRgba } from "../ColorUtils";
 import { Rect } from "../components/Rect";
 import { Project } from "../Project";
 
-export const VERSION = "1.0.8"; // still 1.0.7
+export const VERSION = "1.0.8";
 
 function traverseComponent(
   component: Component,
@@ -114,7 +115,7 @@ export function migrate(data: Project): Project {
         (comp as any).type == Image.displayName ||
         (comp as any).type == GIF.displayName
       ) {
-        (comp as Image).dithering = false;
+        (comp as any).dithering = false;
       }
 
       if ((comp as any).type == CheckComponent.displayName) {
@@ -164,6 +165,19 @@ export function migrate(data: Project): Project {
     data = JSON.parse(jsonData);
 
     oldVersion = "1.0.7";
+  }
+
+  if (oldVersion == "1.0.7") {
+    traverseComponent(data.componentTree, comp => {
+      if (
+        (comp as any).type == Image.displayName ||
+        (comp as any).type == GIF.displayName ||
+        (comp as any).type == RemoteImage.displayName
+      ) {
+        (comp as any).ditheringIntensity = (comp as any).dithering ? 100 : 0;
+      }
+    });
+    oldVersion = "1.0.8";
   }
 
   return data;

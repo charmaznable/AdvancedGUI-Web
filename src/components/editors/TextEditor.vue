@@ -6,8 +6,10 @@
       <textarea :rows="5" v-model="component.text" />
     </div>
     <p style="font-size: 10pt;">
-      You can change the color of words by using minecraft color codes <br>(e.g. <i
-        style="font-family: 'Courier New', Courier, monospace;">§aTest</i> for green).
+      You can change the color of words by using minecraft color codes
+      <br />(e.g.
+      <i style="font-family: 'Courier New', Courier, monospace;">§aTest</i> for
+      green).
     </p>
     <div class="settings-row">
       <span class="label">Contains placeholders</span>
@@ -21,18 +23,33 @@
     <span class="label">Style</span>
     <div class="settings-row">
       <div class="alignOptions">
-        <i class="material-icons" @click="component.alignment = 0" :class="component.alignment == 0 ? 'active' : ''">
+        <i
+          class="material-icons"
+          @click="component.alignment = 0"
+          :class="component.alignment == 0 ? 'active' : ''"
+        >
           format_align_left
         </i>
-        <i class="material-icons" @click="component.alignment = 1" :class="component.alignment == 1 ? 'active' : ''">
+        <i
+          class="material-icons"
+          @click="component.alignment = 1"
+          :class="component.alignment == 1 ? 'active' : ''"
+        >
           format_align_center
         </i>
-        <i class="material-icons" @click="component.alignment = 2" :class="component.alignment == 2 ? 'active' : ''">
+        <i
+          class="material-icons"
+          @click="component.alignment = 2"
+          :class="component.alignment == 2 ? 'active' : ''"
+        >
           format_align_right
         </i>
       </div>
     </div>
-    <font-editor v-model:font="component.font" v-model:size="component.size"></font-editor>
+    <font-editor
+      v-model:font="component.font"
+      v-model:size="component.size"
+    ></font-editor>
     <div class="label heading">Position</div>
     <div class="settings-row">
       <div class="input-box">

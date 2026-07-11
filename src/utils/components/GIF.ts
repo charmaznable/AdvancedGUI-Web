@@ -20,7 +20,7 @@ export class GIF extends Image {
     public height: number,
     public image: string,
     public keepImageRatio: boolean,
-    public dithering: boolean,
+    public ditheringIntensity: number,
     public pausedByDefault: boolean
   ) {
     super(
@@ -33,7 +33,7 @@ export class GIF extends Image {
       height,
       image,
       keepImageRatio,
-      dithering
+      ditheringIntensity
     );
   }
 
@@ -55,7 +55,7 @@ export class GIF extends Image {
       jsonObj.height,
       jsonObj.image,
       jsonObj.keepImageRatio,
-      jsonObj.dithering,
+      jsonObj.dithering ? jsonObj.ditheringIntensity ?? 100 : 0,
       jsonObj.pausedByDefault
     );
   }
@@ -71,7 +71,7 @@ export class GIF extends Image {
       50,
       "",
       true,
-      false,
+      0,
       false
     );
   }

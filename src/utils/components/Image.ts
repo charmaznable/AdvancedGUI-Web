@@ -6,6 +6,8 @@ import { JsonObject } from "../manager/ComponentManager";
 import { images } from "../manager/ImageManager";
 import { markRaw } from "vue";
 import { ComponentType } from "./Component";
+import { devMode } from "../manager/WorkspaceManager";
+import { getDitheredCanvas } from "../Dithering";
 
 export class Image extends Rectangular {
   public static displayName: ComponentType = "Image";
@@ -25,21 +27,32 @@ export class Image extends Rectangular {
     public height: number,
     public image: string,
     public keepImageRatio: boolean,
-    public dithering: boolean
+    public ditheringIntensity: number
   ) {
     super(id, name, clickAction, x, y, width, height);
   }
 
   draw(context: CanvasRenderingContext2D): void {
-    if (images[this.image])
+    const img = images[this.image];
+    if (img) {
+      const dithered =
+        this.ditheringIntensity > 0 && devMode.value
+          ? getDitheredCanvas(
+              img.data,
+              this.width,
+              this.height,
+              this.image,
+              this.ditheringIntensity
+            )
+          : null;
       context.drawImage(
-        images[this.image].data,
+        dithered ?? img.data,
         this.x,
         this.y,
         this.width,
         this.height
       );
-    else
+    } else {
       context.drawImage(
         document.getElementById("broken_TAKEN_ID") as HTMLImageElement,
         Math.max(this.x, this.x + (this.width - 20) / 2),
@@ -47,6 +60,7 @@ export class Image extends Rectangular {
         Math.min(this.width, 20),
         Math.min(this.height, 20)
       );
+    }
   }
 
   modify(newBoundingBox: BoundingBox): void {
@@ -90,7 +104,8 @@ export class Image extends Rectangular {
       height: this.height,
       image: this.image,
       keepImageRatio: this.keepImageRatio,
-      dithering: this.dithering
+      dithering: this.ditheringIntensity > 0,
+      ditheringIntensity: this.ditheringIntensity
     };
   }
 
@@ -105,7 +120,7 @@ export class Image extends Rectangular {
       jsonObj.height,
       jsonObj.image,
       jsonObj.keepImageRatio,
-      jsonObj.dithering
+      jsonObj.dithering ? jsonObj.ditheringIntensity ?? 100 : 0
     );
   }
 
@@ -120,7 +135,7 @@ export class Image extends Rectangular {
       50,
       "Play",
       true,
-      false
+      0
     );
   }
 }
